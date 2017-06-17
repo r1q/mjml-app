@@ -24,7 +24,7 @@ import { fileDialog, saveDialog, fsWriteFile } from 'helpers/fs'
 
 import Button from 'components/Button'
 import ButtonDropdown from 'components/Button/ButtonDropdown'
-import FilesList from 'components/FilesList'
+import FileExplorer from 'components/FileExplorer'
 import NotifBtn from 'components/Notifs/NotifBtn'
 
 import BackButton from './BackButton'
@@ -264,33 +264,18 @@ class ProjectPage extends Component {
           <NotifBtn />
         </div>
 
-        <div className='fg-1 d-f fd-c r' style={{ zIndex: 1 }}>
-          <FilesList
-            onRef={n => this._filelist = n}
-            onEditorRef={n => this._editor = n}
-            withPreview
-            withHome
-            rootPath={rootPath}
-            path={path}
-            activeFile={activeFile}
-            onActiveFileChange={this.handleActiveFileChange}
-            onPathChange={this.handlePathChange}
-            onAddClick={this.openAddModal}
-            onAddFile={this.handleAddFile}
-            onRemoveFile={this.handleRemoveFile}
-            focusHome
-          />
+        <div className='fg-1 d-f r' style={{ zIndex: 1 }}>
+          <div className='r' style={{ width: 200 }}>
+            <FileExplorer
+              base={rootPath}
+              onFileClick={p => console.log(`you clicked on ${p}`)}
+            />
+          </div>
         </div>
 
         <SendModal />
-        <AddFileModal
-          rootPath={rootPath}
-          onAdd={this.handleAddFile}
-        />
-        <RemoveFileModal
-          rootPath={rootPath}
-          onRemove={this.handleRemoveFile}
-        />
+        <AddFileModal rootPath={rootPath} onAdd={this.handleAddFile} />
+        <RemoveFileModal rootPath={rootPath} onRemove={this.handleRemoveFile} />
 
       </div>
     )
