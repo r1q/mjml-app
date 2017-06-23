@@ -31,8 +31,7 @@
     "productName": "MJML",
     "appId": "org.develar.MJML",
     "dmg": {
-      "contents": [
-        {
+      "contents": [{
           "x": 410,
           "y": 150,
           "type": "link",
@@ -119,6 +118,7 @@
     "html-webpack-plugin": "^2.28.0",
     "jsdom": "^11.0.0",
     "json-loader": "^0.5.4",
+    "mailjet-icons": "meriadec/mailjet-icons",
     "minimist": "^1.2.0",
     "node-sass": "^4.5.3",
     "react-addons-test-utils": "^15.6.0",
