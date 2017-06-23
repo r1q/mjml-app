@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import cx from 'classnames'
 import { fromJS } from 'immutable'
 import IconFolder from 'react-icons/md/folder'
+import IconFile from 'react-icons/md/insert-drive-file'
+import IconFolderClosed from 'react-icons/md/keyboard-arrow-right'
+import IconFolderOpen from 'react-icons/md/keyboard-arrow-down'
 
 import Tabbable from 'components/Tabbable'
 
@@ -97,10 +100,13 @@ class FileItem extends Component {
           className={cx('d-f ai-c p-5 cu-d FileTree-item-label', {
             isActive: isOpened,
           })}
-          onClick={isFolder ? this.handleToggle : this.handleSelect}
+          onClick={isFolder ? this.handleToggle : undefined}
+          onDoubleClick={isFolder ? undefined : this.handleSelect}
         >
-          <div className='z fs-0'>
-            {isFolder && <IconFolder className='mr-5' />}
+          {isFolder && (isOpened ? <IconFolderOpen /> : <IconFolderClosed />)}
+          <div className='z fs-0' style={{ width: 20, marginRight: 2 }}>
+            {isFolder && <IconFolder />}
+            {!isFolder && <IconFile />}
           </div>
           <div className='fg-1 ellipsis'>
             {fileName}
@@ -108,7 +114,7 @@ class FileItem extends Component {
         </Tabbable>
 
         {isOpened && (
-          <div className='ml-10'>
+          <div style={{ marginLeft: 30 }}>
             <FileTree
               base={filePath}
               onFileClick={onFileClick}
