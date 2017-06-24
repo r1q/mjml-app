@@ -7,7 +7,12 @@
 }
 
 .FileTree-item-label {
-  &:hover, &:active, &:focus, &.isActive {
+  outline: none !important;
+  &:hover, &:active {
+    color: white;
+  }
+  &.isActive {
+    background: rgba(white, 0.1);
     color: white;
   }
 }
