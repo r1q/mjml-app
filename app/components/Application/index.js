@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import get from 'lodash/get'
 import cx from 'classnames'
 import { connect } from 'react-redux'
 
@@ -44,7 +45,8 @@ class Application extends Component {
   handleDrop = e => {
     e.preventDefault()
     this.handleDragLeave()
-    const fileName = e.dataTransfer.files[0].path
+    const fileName = get(e, 'dataTransfer.files[0].path')
+    if (!fileName) { return }
     this.props.dropFile(fileName)
   }
 
@@ -69,11 +71,7 @@ class Application extends Component {
 
     return (
       <div
-        className={cx('Application', {
-          'bg-dark': pathname === '/',
-          'bg-darker': pathname === '/project',
-          isOver,
-        })}
+        className='Application'
         onDragOver={this.handleDragOver}
       >
 

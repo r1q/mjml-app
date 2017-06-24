@@ -27,13 +27,12 @@ class BackButton extends Component {
 
     return (
       <Button
-        className='cu-d ellipsis'
+        className='cu-d ellipsis sticky o-n'
         transparent
         link
         to='/'
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
-        style={{ minWidth: 76 }}
       >
         <FaHome className='mr-5' />
         <div className='r d-f ai-c' style={{ height: '100%' }}>
@@ -43,7 +42,6 @@ class BackButton extends Component {
                 className='ellipsis'
                 style={{
                   transform: `translate3d(0, ${m.y}px, 0)`,
-                  maxWidth: 250,
                 }}
               >
                 {projectName}

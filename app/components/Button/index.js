@@ -39,6 +39,11 @@ class Button extends Component {
       className: cn,
       disabled,
       tabIndex: unclickable ? undefined : 0,
+      onDragStart: e => {
+        e.preventDefault()
+        e.stopPropagation()
+        return false
+      },
       ...props,
       ref: n => this._wrapped = n,
     }
