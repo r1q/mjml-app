@@ -48,7 +48,9 @@ class Application extends Component {
     e.preventDefault()
     this.handleDragLeave()
     const fileName = get(e, 'dataTransfer.files[0].path')
-    if (!fileName) { return }
+    if (!fileName) {
+      return
+    }
     this.props.dropFile(fileName)
   }
 
@@ -67,10 +69,7 @@ class Application extends Component {
     const { pathname } = location
 
     return (
-      <div
-        className='Application'
-        onDragOver={this.handleDragOver}
-      >
+      <div className="Application" onDragOver={this.handleDragOver}>
         <DropFile
           onDragOver={this.handleDragOver}
           onDragLeave={this.handleDragLeave}
