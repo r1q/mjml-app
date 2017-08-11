@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import debounce from 'lodash/debounce'
 import get from 'lodash/get'
 import CodeMirror from 'codemirror'
+import beautifyJS from 'js-beautify'
 
 import 'codemirror/addon/selection/active-line'
 import 'codemirror/addon/edit/closetag'
@@ -21,7 +22,12 @@ import 'codemirror/addon/hint/show-hint'
 import 'codemirror/addon/hint/xml-hint'
 import 'codemirror/addon/lint/lint'
 import 'helpers/codemirror-util-autoformat'
-import { autocompleteTags, completeAfter, completeIfAfterLt, completeIfInTag } from 'helpers/codemirror-autocomplete-mjml'
+import {
+  autocompleteTags,
+  completeAfter,
+  completeIfAfterLt,
+  completeIfInTag,
+} from 'helpers/codemirror-autocomplete-mjml'
 
 import foldByLevel from 'helpers/foldByLevel'
 import { fsReadFile, fsWriteFile } from 'helpers/fs'
@@ -29,41 +35,43 @@ import { setPreview } from 'actions/preview'
 
 import './styles.scss'
 
-@connect(state => {
-  const { settings, preview } = state
-  return {
-    mjmlEngine: settings.getIn(['mjml', 'engine'], 'auto'),
-    minify: settings.getIn(['mjml', 'minify'], false),
-    wrapLines: settings.getIn(['editor', 'wrapLines'], true),
-    autoFold: settings.getIn(['editor', 'autoFold']),
-    foldLevel: settings.getIn(['editor', 'foldLevel']),
-    highlightTag: settings.getIn(['editor', 'highlightTag']),
-    lightTheme: settings.getIn(['editor', 'lightTheme'], false),
-    errors: get(preview, 'errors', []),
-  }
-}, {
-  setPreview,
-})
+@connect(
+  state => {
+    const { settings, preview } = state
+    return {
+      mjmlEngine: settings.getIn(['mjml', 'engine'], 'auto'),
+      minify: settings.getIn(['mjml', 'minify'], false),
+      wrapLines: settings.getIn(['editor', 'wrapLines'], true),
+      autoFold: settings.getIn(['editor', 'autoFold']),
+      foldLevel: settings.getIn(['editor', 'foldLevel']),
+      highlightTag: settings.getIn(['editor', 'highlightTag']),
+      lightTheme: settings.getIn(['editor', 'lightTheme'], false),
+      errors: get(preview, 'errors', []),
+    }
+  },
+  {
+    setPreview,
+  },
+)
 class FileEditor extends Component {
-
   state = {
     isLoading: true,
   }
 
-  componentWillMount () {
+  componentWillMount() {
     // used to store different histories, for ability to restore
     // it when switching to another file then switching back
     this._historyCache = {}
   }
 
-  componentDidMount () {
+  componentDidMount() {
     window.requestIdleCallback(() => {
       this.initEditor()
       this.loadContent()
     })
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (this.props.mjmlEngine !== nextProps.mjmlEngine) {
       this.handleChange()
     }
@@ -72,7 +80,7 @@ class FileEditor extends Component {
     }
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (prevProps.fileName !== this.props.fileName) {
       // backup history
       this._historyCache[prevProps.fileName] = this._codeMirror.getHistory()
@@ -82,11 +90,14 @@ class FileEditor extends Component {
       this._codeMirror.setOption('lineWrapping', this.props.wrapLines)
     }
     if (prevProps.highlightTag !== this.props.highlightTag) {
-      this._codeMirror.setOption('matchTags', this.props.highlightTag ? { bothTags: true } : undefined)
+      this._codeMirror.setOption(
+        'matchTags',
+        this.props.highlightTag ? { bothTags: true } : undefined,
+      )
     }
     if (
-      (!prevProps.autoFold && this.props.autoFold)
-      || (this.props.autoFold && (this.props.foldLevel !== prevProps.foldLevel))
+      (!prevProps.autoFold && this.props.autoFold) ||
+      (this.props.autoFold && this.props.foldLevel !== prevProps.foldLevel)
     ) {
       foldByLevel(this._codeMirror, this.props.foldLevel)
     }
@@ -95,20 +106,15 @@ class FileEditor extends Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (this._codeMirror) {
       this._codeMirror.toTextArea()
       this._codeMirror = null
     }
   }
 
-  async loadContent () {
-
-    const {
-      fileName,
-      autoFold,
-      foldLevel,
-    } = this.props
+  async loadContent() {
+    const { fileName, autoFold, foldLevel } = this.props
 
     const { isLoading } = this.state
 
@@ -118,7 +124,9 @@ class FileEditor extends Component {
 
     try {
       const content = await fsReadFile(fileName, { encoding: 'utf8' })
-      if (!this._codeMirror) { return }
+      if (!this._codeMirror) {
+        return
+      }
       this._codeMirror.setValue(content)
       // load history if exists, else, clear it.
       if (this._historyCache[fileName]) {
@@ -132,18 +140,14 @@ class FileEditor extends Component {
       }
       this.setState({ isLoading: false })
     } catch (e) {} // eslint-disable-line
-
   }
 
-  initEditor () {
+  initEditor() {
+    if (!this._textarea) {
+      return
+    }
 
-    if (!this._textarea) { return }
-
-    const {
-      wrapLines,
-      highlightTag,
-      lightTheme,
-    } = this.props
+    const { wrapLines, highlightTag, lightTheme } = this.props
 
     if (this._codeMirror) {
       this._codeMirror.toTextArea()
@@ -196,11 +200,7 @@ class FileEditor extends Component {
   }
 
   handleChange = debounce(async () => {
-    const {
-      setPreview,
-      fileName,
-      mjmlEngine,
-    } = this.props
+    const { setPreview, fileName, mjmlEngine } = this.props
     const mjml = this._codeMirror.getValue()
     if (mjmlEngine === 'auto') {
       setPreview(fileName, mjml)
@@ -212,10 +212,14 @@ class FileEditor extends Component {
   }, 200)
 
   beautify = () => {
-    const totalLines = this._codeMirror.lineCount()
-    const totalChars = this._codeMirror.getTextArea().value.length
-    this._codeMirror.autoFormatRange({ line: 0, ch: 0 }, { line: totalLines, ch: totalChars })
-    this._codeMirror.setCursor({ line: 0, ch: 0 })
+    const value = this._codeMirror.getValue()
+    const scrollInfo = this._codeMirror.getScrollInfo()
+    const beautified = beautifyJS.html(value, {
+      indent_size: 2, // eslint-disable-line camelcase
+      wrap_attributes_indent_size: 2, // eslint-disable-line camelcase
+    })
+    this._codeMirror.setValue(beautified)
+    this._codeMirror.scrollTo(0, scrollInfo.top)
   }
 
   debounceWrite = debounce((fileName, mjml) => {
@@ -230,34 +234,28 @@ class FileEditor extends Component {
     this._codeMirror && this._codeMirror.focus()
   }
 
-  render () {
+  render() {
+    const { disablePointer, onRef } = this.props
 
-    const {
-      disablePointer,
-      onRef,
-    } = this.props
-
-    const {
-      isLoading,
-    } = this.state
+    const { isLoading } = this.state
 
     onRef(this)
 
     return (
       <div
-        className='FileEditor'
+        className="FileEditor"
         style={{
           pointerEvents: disablePointer ? 'none' : 'auto',
         }}
       >
-        {isLoading && (
-          <div className='sticky z FileEditor--loader'>{'...'}</div>
-        )}
-        <textarea ref={r => this._textarea = r} />
+        {isLoading &&
+          <div className="sticky z FileEditor--loader">
+            {'...'}
+          </div>}
+        <textarea ref={r => (this._textarea = r)} />
       </div>
     )
   }
-
 }
 
 export default FileEditor

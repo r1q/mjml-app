@@ -6,7 +6,8 @@
 
 .FileTree-item-label {
   outline: none !important;
-  &:hover, &:active {
+  &:hover,
+  &:active {
     color: white;
   }
   &.isActive {
