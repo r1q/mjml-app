@@ -114,10 +114,10 @@ a {
   position: relative;
   z-index: 4000;
   &:hover {
-    background: #34343f;
+    background: $bg-darker;
   }
   &:active {
-    background: #42424f;
+    background: $bg-light;
   }
 }
 

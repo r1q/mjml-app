@@ -23,7 +23,7 @@ export function loadSettings() {
       },
       projects: [],
       api: {
-        Subject: 'MJML App test email',
+        Subject: 'PageMaker test email',
         APIKey: '',
         APISecret: '',
         SenderEmail: '',

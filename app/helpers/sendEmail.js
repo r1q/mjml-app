@@ -9,7 +9,7 @@ export default function sendEmail(opts) {
 
   return send.request({
     FromEmail: SenderEmail,
-    FromName: 'MJML App',
+    FromName: 'PageMaker',
     Subject,
     'Html-part': content,
     Recipients,

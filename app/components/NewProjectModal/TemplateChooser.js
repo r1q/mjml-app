@@ -80,6 +80,13 @@ class TemplateChooser extends Component {
           {source === 'basic'
             ? <div className="d-f">
                 <TabItem
+                  onClick={() => onSelect('onePage')}
+                  isSelected={template === 'onePage'}
+                  label="One page layout"
+                >
+                  <IconSimple size={80} />
+                </TabItem>
+                <TabItem
                   onClick={() => onSelect('singleBasic')}
                   isSelected={template === 'singleBasic'}
                   label="Single file, basic layout"

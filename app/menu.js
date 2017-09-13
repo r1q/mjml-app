@@ -3,7 +3,7 @@ import { app, shell } from 'electron'
 export default function buildMenu(mainWindow) {
   return [
     {
-      label: 'MJML',
+      label: 'PageMaker',
       submenu: [
         {
           label: 'New project',
@@ -42,7 +42,7 @@ export default function buildMenu(mainWindow) {
           type: 'separator',
         },
         {
-          label: 'Quit MJML',
+          label: 'Quit PageMaker',
           accelerator: 'Command+Q',
           click() {
             app.quit()
@@ -110,7 +110,7 @@ export default function buildMenu(mainWindow) {
           selector: 'performMiniaturize:',
         },
         {
-          label: 'Hide MJML',
+          label: 'Hide PageMaker',
           accelerator: 'Command+H',
           selector: 'hide:',
         },
